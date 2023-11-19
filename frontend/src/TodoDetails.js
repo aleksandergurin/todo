@@ -1,8 +1,8 @@
 import {useEffect, useState} from "react"
 import {useNavigate, useParams} from "react-router-dom"
-import {Button, Col, Row, Input, Flex} from "antd"
+import {Button, Col, Row, Input, Flex, Checkbox} from "antd"
 
-import {TODOS_PATH, CSRF_PATH} from "./Constants"
+import {TODOS_PATH, CSRF_PATH, TODO_STATUS_DONE, TODO_STATUS_ACTIVE} from "./Constants"
 
 
 export const TodoDetails = () => {
@@ -16,7 +16,6 @@ export const TodoDetails = () => {
             .then(response => {
                 if (response.status === 200) {
                     response.json().then(data => setTodo(data))
-                    console.log(todo)
                 }
             })
     }, [todoId])
@@ -28,7 +27,7 @@ export const TodoDetails = () => {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
-                        "X-CSRFToken": response.headers.get('X-CSRFToken'),
+                        "X-CSRFToken": response.headers.get("X-CSRFToken"),
                     },
                 })
                     .then(response => {
@@ -48,7 +47,7 @@ export const TodoDetails = () => {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
-                        "X-CSRFToken": response.headers.get('X-CSRFToken'),
+                        "X-CSRFToken": response.headers.get("X-CSRFToken"),
                     },
                     body: JSON.stringify(todo),
                 })
@@ -62,25 +61,41 @@ export const TodoDetails = () => {
             .catch(error => console.error(error.message))
     }
 
+    const doneHandler = (e) => {
+        const status = e.target.checked ? TODO_STATUS_DONE : TODO_STATUS_ACTIVE
+        setTodo(prev => ({...prev, status}))
+    }
+
     return (
         <>
-            <Row style={{paddingBottom: '20px'}}>
+            <Row style={{paddingBottom: "20px"}}>
                 <Col span={10}>
                     {
                         todo ?
                             <Input.TextArea
                                 defaultValue={todo.content}
                                 rows={4}
-                                onChange={(e) => setTodo({
-                                    ...todo,
+                                onChange={(e) => setTodo(prev => ({
+                                    ...prev,
                                     content: e.target.value,
-                                })}
-                            /> : '--'
+                                }))}
+                            /> : "--"
                     }
                 </Col>
                 <Col span={14}></Col>
             </Row>
-            <Row style={{paddingBottom: '20px'}}>
+            <Row style={{paddingBottom: "20px"}}>
+                <Col span={8}>
+                    <Checkbox
+                        checked={todo?.status === TODO_STATUS_DONE}
+                        onChange={doneHandler}
+                    >
+                        Done
+                    </Checkbox>
+                </Col>
+                <Col span={16}></Col>
+            </Row>
+            <Row>
                 <Col span={8}>
                     <Flex gap="small" wrap="wrap">
                         <Button

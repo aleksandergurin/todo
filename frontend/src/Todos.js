@@ -31,6 +31,8 @@ export const TodosTable = () => {
     const handleTableChange = (pagination, filters, sorter) =>
         setCurrent(pagination.current)
 
+    // TODO: add done action
+
     return (
         <>
             {
