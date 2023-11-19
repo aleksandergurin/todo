@@ -10,11 +10,20 @@ class TodosView(generics.ListCreateAPIView):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = TodoSerializer
-    queryset = Todo.objects.all()
+
+    def get_queryset(self):
+        user = self.request.user
+        return Todo.objects.filter(author=user)
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 
 class TodoDetails(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
-    queryset = Todo.objects.all()
     serializer_class = TodoSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return Todo.objects.filter(author=user)
