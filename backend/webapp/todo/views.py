@@ -6,7 +6,7 @@ from .models import Todo
 from .serializers import TodoSerializer
 
 
-class TodosView(generics.ListCreateAPIView):
+class TodosView(generics.ListAPIView):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = TodoSerializer
