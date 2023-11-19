@@ -109,7 +109,7 @@ export const TodoDetails = () => {
                             type="primary"
                             onClick={deleteHandler}
                         >
-                            Delete todo
+                            Delete task
                         </Button>
                     </Flex>
                 </Col>
