@@ -56,7 +56,7 @@ export const TodosTable = () => {
                             type="primary"
                             onClick={() => navigate("/add")}
                         >
-                            Add todo
+                            Add task
                         </Button>
                     </> :
                     <p>Loading...</p>
