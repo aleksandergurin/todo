@@ -58,8 +58,8 @@ const App = ({history}) => {
     return (
         <div className="App">
             <Layout style={layoutStyle}>
-                <Header style={headerStyle}>
-                    {username ?
+                {username ?
+                    <Header style={headerStyle}>
                         <div>
                             <b>{username}</b> |
                             <Button
@@ -68,9 +68,9 @@ const App = ({history}) => {
                             >
                                 Logout
                             </Button>
-                        </div> : null
-                    }
-                </Header>
+                        </div>
+                    </Header> : null
+                }
                 <Content style={contentStyle}>
                     <Routes>
                         <Route path="/login" element={<Login />} />
