@@ -16,5 +16,6 @@ RUN rm requirements.txt
 
 COPY webapp .
 COPY manage.py .
+COPY initial-data.json .
 
 CMD python manage.py runserver 0.0.0.0:8000
