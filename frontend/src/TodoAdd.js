@@ -1,6 +1,6 @@
 import {useState} from "react"
 import {useNavigate} from "react-router-dom"
-import {Button, Col, Input, Row} from "antd"
+import {Button, Col, Input, Row, Typography} from "antd"
 
 import {TODOS_PATH, CSRF_PATH} from "./Constants"
 
@@ -34,6 +34,7 @@ export const TodoAdd = () => {
         <>
             <Row style={{paddingBottom: "20px"}}>
                 <Col span={8}>
+                    <Typography.Title level={5}>Task content</Typography.Title>
                     <TextArea
                         rows={4}
                         onChange={(e) => setContent(e.target.value)}
@@ -47,7 +48,7 @@ export const TodoAdd = () => {
                         type="primary"
                         onClick={handleSubmitTodo}
                     >
-                        Submit
+                        Save
                     </Button>
                 </Col>
                 <Col span={16}></Col>
