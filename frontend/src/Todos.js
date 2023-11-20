@@ -7,7 +7,7 @@ import {
     CSRF_PATH,
     PAGE_SIZE,
     TODO_STATUS_DONE,
-    TODO_STATUS_ACTIVE,
+    TODO_STATUS_ACTIVE, QUICK_NOTIF_DURATION_SEC,
 } from "./Constants"
 
 
@@ -27,7 +27,7 @@ const columns = [
 ]
 
 
-export const TodosTable = () => {
+export const TodosTable = ({notifApi}) => {
     const navigate = useNavigate()
     const [todos, setTodos] = useState(null)
     const [current, setCurrent] = useState(1)
@@ -36,6 +36,10 @@ export const TodosTable = () => {
         fetch(`${TODOS_PATH}?page=${current}`)
             .then(response => response.json())
             .then(data => setTodos(data))
+            .catch(error => notifApi.error({
+                message: "Unable to receive tasks",
+                description: "Try again later.",
+            }))
     }, [current])
 
     const handleTableChange = (pagination, filters, sorter) =>
@@ -55,6 +59,14 @@ export const TodosTable = () => {
                 })
             }))
 
+            const errorNotif = {
+                message: "Unable to change task",
+                description: "Try again later.",
+            }
+            const successNotif = {
+                message: `Task marked as "${status}"`,
+                duration: QUICK_NOTIF_DURATION_SEC,
+            }
             fetch(CSRF_PATH)
                 .then(response => {
                     fetch(`${TODOS_PATH}${record.id}`, {
@@ -65,9 +77,16 @@ export const TodosTable = () => {
                         },
                         body: JSON.stringify({...record, status}),
                     })
-                        .catch(error => console.error(error.message))
+                        .then(response => {
+                            if (response.status === 200) {
+                                notifApi.success(successNotif)
+                            } else {
+                                notifApi.error(errorNotif)
+                            }
+                        })
+                        .catch(error => notifApi.error(errorNotif))
                 })
-                .catch(error => console.error(error.message))
+                .catch(error => notifApi.error(errorNotif))
         },
         selectedRowKeys: todos?.results
             .filter(t => t.status === TODO_STATUS_DONE)
