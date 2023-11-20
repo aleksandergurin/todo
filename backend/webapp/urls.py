@@ -10,6 +10,7 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/todo', include('webapp.todo.urls')),
+    path('api/weather', include('webapp.weather.urls')),
     path('api/auth/login', views.login_view, name='login'),
     path('api/auth/logout', views.logout_view, name='logout'),
     path('api/auth/whoami', views.whoami, name='whoami'),

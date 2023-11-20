@@ -7,6 +7,9 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Put your API key in env/openweathermap.env file
+WEATHER_API_KEY = environ.get('OPENWEATHERMAP_API_KEY')
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'da39a3ee5e6b4b0d3255bfef95601890afd80709'
 
@@ -32,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'webapp.todo',
+    'webapp.weather',
 ]
 
 MIDDLEWARE = [
