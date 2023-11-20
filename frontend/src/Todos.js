@@ -24,6 +24,18 @@ const columns = [
         render: (text, record) => record.status === TODO_STATUS_DONE ?
             <s>{text}</s> : text,
     },
+    {
+        title: "Location",
+        render: (text, record) => {
+            const {city, state, country} = record
+            const location = [city, state, country].filter(Boolean).join(', ')
+            if (!location) {
+                return '--'
+            }
+            return record.status === TODO_STATUS_DONE ?
+                <s>{location}</s> : location
+        },
+    },
 ]
 
 
