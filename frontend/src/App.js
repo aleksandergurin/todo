@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react"
 import {Route, Routes, useNavigate} from "react-router-dom"
-import {Button, Layout} from "antd"
+import {Button, Layout, notification} from "antd"
 
 import "./App.css"
 import {LOGOUT_PATH, WHOAMI_PATH} from "./Constants"
@@ -28,6 +28,10 @@ const contentStyle = {
 const App = ({history}) => {
     const navigate = useNavigate()
     const [username, setUsername] = useState(null)
+    const [
+        notifApi,
+        contextHolder,
+    ] = notification.useNotification()
 
     useEffect(() => {
         fetch(WHOAMI_PATH)
@@ -57,6 +61,7 @@ const App = ({history}) => {
 
     return (
         <div className="App">
+            {contextHolder}
             <Layout style={layoutStyle}>
                 {username ?
                     <Header style={headerStyle}>
@@ -73,7 +78,7 @@ const App = ({history}) => {
                 }
                 <Content style={contentStyle}>
                     <Routes>
-                        <Route path="/login" element={<Login />} />
+                        <Route path="/login" element={<Login notifApi={notifApi} />} />
                         <Route path="/" element={<TodosTable />} />
                         <Route path="/add" element={<TodoAdd />} />
                         <Route path="/todo/:todoId" element={<TodoDetails />} />

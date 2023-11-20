@@ -4,16 +4,8 @@ import {CSRF_PATH, LOGIN_PATH} from "./Constants"
 import {useNavigate} from "react-router-dom"
 
 
-export const Login = () => {
+export const Login = ({notifApi}) => {
     const navigate = useNavigate()
-    const [api, contextHolder] = notification.useNotification();
-    const couldNotLogin = () => {
-        api.error({
-            key: "login-notification",
-            message: "Unable to login",
-            description: "Check login and password.",
-        })
-    }
 
     const onFinish = (values) => {
         fetch(CSRF_PATH)
@@ -32,8 +24,11 @@ export const Login = () => {
                         if (response.status === 200) {
                             navigate("/")
                         } else if ([400].includes(response.status)) {
-                            // Go to login page.
-                            couldNotLogin()
+                            notifApi.error({
+                                key: "login-notification",
+                                message: "Unable to login",
+                                description: "Check login and password.",
+                            })
                         }
                     })
                     .catch(error => console.error(error.message))
@@ -42,7 +37,6 @@ export const Login = () => {
 
     return (
         <>
-            {contextHolder}
             <Form
                 name="basic"
                 labelCol={{span: 8}}
