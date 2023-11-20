@@ -69,7 +69,7 @@ export const TodosTable = ({notifApi}) => {
             }
             fetch(CSRF_PATH)
                 .then(response => {
-                    fetch(`${TODOS_PATH}${record.id}`, {
+                    fetch(`${TODOS_PATH}/${record.id}`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",

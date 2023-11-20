@@ -18,7 +18,7 @@ export const TodoDetails = ({notifApi}) => {
     const [todo, setTodo] = useState(null)
 
     useEffect(() => {
-        fetch(`${TODOS_PATH}${todoId}`)
+        fetch(`${TODOS_PATH}/${todoId}`)
             .then(response => {
                 if (response.status === 200) {
                     response.json().then(data => setTodo(data))
@@ -38,7 +38,7 @@ export const TodoDetails = ({notifApi}) => {
         }
         fetch(CSRF_PATH)
             .then(response => {
-                fetch(`${TODOS_PATH}${todo.id}`, {
+                fetch(`${TODOS_PATH}/${todo.id}`, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
@@ -69,7 +69,7 @@ export const TodoDetails = ({notifApi}) => {
         }
         fetch(CSRF_PATH)
             .then(response => {
-                fetch(`${TODOS_PATH}${todoId}`, {
+                fetch(`${TODOS_PATH}/${todoId}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",

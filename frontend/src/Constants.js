@@ -1,4 +1,4 @@
-export const TODOS_PATH = "/api/todo/"
+export const TODOS_PATH = "/api/todo"
 export const CSRF_PATH = "/api/auth/csrf"
 export const LOGIN_PATH = "/api/auth/login"
 export const LOGOUT_PATH = "/api/auth/logout"
