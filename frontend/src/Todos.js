@@ -112,7 +112,7 @@ export const TodosTable = ({notifApi}) => {
             const status = selected ? TODO_STATUS_DONE : TODO_STATUS_ACTIVE
             setTodos(prev => ({
                 ...prev,
-                results: prev.results.map(todo => {
+                results: prev?.results.map(todo => {
                     if (todo.id !== record.id) {
                         return todo
                     }
@@ -161,7 +161,7 @@ export const TodosTable = ({notifApi}) => {
                     <>
                         <Table
                             columns={columns(weatherData)}
-                            dataSource={todos.results}
+                            dataSource={todos?.results}
                             pagination={{
                                 current,
                                 total: todos.count,
