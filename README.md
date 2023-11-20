@@ -1,3 +1,7 @@
+## Example TODO application
+
+![Screenshot](screenshot.png)
+
 ## Prerequisites:
 Go to https://openweathermap.org sign up, then get your API key.
 After that add your API key to `./backend/env/openweathermap.env`
