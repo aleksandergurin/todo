@@ -1,4 +1,8 @@
-How to run the project:
+## Prerequisites:
+Go to https://openweathermap.org sign up, then get your API key.
+After that add your API key to `./backend/env/openweathermap.env`
+
+## How to run the project:
 ```bash
 docker compose build
 docker compose up
