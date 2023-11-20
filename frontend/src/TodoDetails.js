@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react"
 import {useNavigate, useParams} from "react-router-dom"
-import {Button, Col, Row, Input, Flex, Checkbox} from "antd"
+import {Button, Col, Row, Input, Flex, Checkbox, Typography} from "antd"
 
 import {
     TODOS_PATH,
@@ -100,14 +100,17 @@ export const TodoDetails = ({notifApi}) => {
                 <Col span={10}>
                     {
                         todo ?
-                            <Input.TextArea
-                                defaultValue={todo.content}
-                                rows={4}
-                                onChange={(e) => setTodo(prev => ({
-                                    ...prev,
-                                    content: e.target.value,
-                                }))}
-                            /> : "Not found"
+                            <>
+                                <Typography.Title level={5}>Task content</Typography.Title>
+                                <Input.TextArea
+                                    defaultValue={todo.content}
+                                    rows={4}
+                                    onChange={(e) => setTodo(prev => ({
+                                        ...prev,
+                                        content: e.target.value,
+                                    }))}
+                                />
+                            </> : "Not found"
                     }
                 </Col>
                 <Col span={14}></Col>
