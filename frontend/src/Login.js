@@ -8,6 +8,10 @@ export const Login = ({notifApi}) => {
     const navigate = useNavigate()
 
     const onFinish = (values) => {
+        const errorNotif = {
+            message: "Unable to login",
+            description: "Check login and password.",
+        }
         fetch(CSRF_PATH)
             .then(tokenResp => {
                 fetch(LOGIN_PATH, {
@@ -24,14 +28,10 @@ export const Login = ({notifApi}) => {
                         if (response.status === 200) {
                             navigate("/")
                         } else if ([400].includes(response.status)) {
-                            notifApi.error({
-                                key: "login-notification",
-                                message: "Unable to login",
-                                description: "Check login and password.",
-                            })
+                            notifApi.error(errorNotif)
                         }
                     })
-                    .catch(error => console.error(error.message))
+                    .catch(error => notifApi.error(errorNotif))
             })
     }
 
