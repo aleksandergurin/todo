@@ -1,11 +1,12 @@
 import {useState} from "react"
 import {useNavigate} from "react-router-dom"
-import {Button, Col, Input, Row, Typography} from "antd"
+import {Button, Col, Input, Row, Typography, AutoComplete} from "antd"
 
 import {
     TODOS_PATH,
     CSRF_PATH,
     QUICK_NOTIF_DURATION_SEC,
+    GEO_PATH,
 } from "./Constants"
 
 const {TextArea} = Input
@@ -13,6 +14,8 @@ const {TextArea} = Input
 export const TodoAdd = ({notifApi}) => {
     const navigate = useNavigate()
     const [content, setContent] = useState("")
+    const [location, setLocation] = useState(null)
+    const [locationOptions, setLocationOptions] = useState(null)
 
     const handleSubmitTodo = () => {
         const errorNotif = {
@@ -32,7 +35,12 @@ export const TodoAdd = ({notifApi}) => {
                         "Content-Type": "application/json",
                         "X-CSRFToken": response.headers.get("X-CSRFToken"),
                     },
-                    body: JSON.stringify({content}),
+                    body: JSON.stringify({
+                        content,
+                        city: location?.name,
+                        state: location?.state,
+                        country: location?.country,
+                    }),
                 })
                     .then(response => {
                         if (response.status === 201) {
@@ -42,6 +50,41 @@ export const TodoAdd = ({notifApi}) => {
                         }
                     })
                     .catch(error => notifApi.error(errorNotif))
+            })
+            .catch(error => notifApi.error(errorNotif))
+    }
+
+    const searchLocation = (query) => {
+        if (!query) {
+            setLocationOptions(null)
+            return
+        }
+
+        const errorNotif = {
+            message: "Unable to obtain GEO data",
+            description: "Try again later.",
+        }
+
+        fetch(`${GEO_PATH}/${encodeURI(query)}`)
+            .then(response => {
+                if (response.status === 200) {
+                    response.json().then(data => {
+                        const seenValues = new Set()
+                        const newLocationOptions = []
+                        data.data.forEach((locationObj, idx) => {
+                            const {name, state, country} = locationObj
+                            const label = [name, state, country].filter(Boolean).join(', ')
+                            if (seenValues.has(label)) {
+                                return
+                            }
+                            seenValues.add(label)
+                            newLocationOptions.push({value: label, data: locationObj})
+                        })
+                        setLocationOptions(newLocationOptions)
+                    })
+                } else {
+                    notifApi.error(errorNotif)
+                }
             })
             .catch(error => notifApi.error(errorNotif))
     }
@@ -57,6 +100,16 @@ export const TodoAdd = ({notifApi}) => {
                     />
                 </Col>
                 <Col span={16}></Col>
+            </Row>
+            <Row style={{paddingBottom: "20px"}}>
+                <AutoComplete
+                    allowClear
+                    style={{width: "250px"}}
+                    options={locationOptions}
+                    onSelect={(_, optionObj) => setLocation(optionObj.data)}
+                    onSearch={searchLocation}
+                    placeholder="City"
+                />
             </Row>
             <Row style={{paddingBottom: "20px"}}>
                 <Col span={8}>
