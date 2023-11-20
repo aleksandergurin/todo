@@ -81,7 +81,7 @@ const App = ({history}) => {
                         <Route path="/login" element={<Login notifApi={notifApi} />} />
                         <Route path="/" element={<TodosTable />} />
                         <Route path="/add" element={<TodoAdd />} />
-                        <Route path="/todo/:todoId" element={<TodoDetails />} />
+                        <Route path="/todo/:todoId" element={<TodoDetails notifApi={notifApi} />} />
                         <Route path="*" element={<NoPage />} />
                     </Routes>
                 </Content>

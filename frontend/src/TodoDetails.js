@@ -5,7 +5,7 @@ import {Button, Col, Row, Input, Flex, Checkbox} from "antd"
 import {TODOS_PATH, CSRF_PATH, TODO_STATUS_DONE, TODO_STATUS_ACTIVE} from "./Constants"
 
 
-export const TodoDetails = () => {
+export const TodoDetails = ({notifApi}) => {
     const navigate = useNavigate()
     const {todoId} = useParams()
 
@@ -21,6 +21,15 @@ export const TodoDetails = () => {
     }, [todoId])
 
     const deleteHandler = () => {
+        const errorNotif = {
+            message: "Unable to delete task",
+            description: "Try again later.",
+        }
+        const successNotif = {
+            message: "Task deleted",
+            duration: 1, // sec
+            onClose: () => navigate("/"),
+        }
         fetch(CSRF_PATH)
             .then(response => {
                 fetch(`${TODOS_PATH}${todo.id}`, {
@@ -32,15 +41,26 @@ export const TodoDetails = () => {
                 })
                     .then(response => {
                         if (response.status === 204) {
-                            navigate("/")
+                            notifApi.success(successNotif)
+                        } else {
+                            notifApi.error(errorNotif)
                         }
                     })
-                    .catch(error => console.error(error.message))
+                    .catch(error => notifApi.error(errorNotif))
             })
-            .catch(error => console.error(error.message))
+            .catch(error => notifApi.error(errorNotif))
     }
 
     const saveHandler = () => {
+        const errorNotif = {
+            message: "Unable to save task",
+            description: "Try again later.",
+        }
+        const successNotif = {
+            message: "Task saved",
+            duration: 1, // sec
+            onClose: () => navigate("/"),
+        }
         fetch(CSRF_PATH)
             .then(response => {
                 fetch(`${TODOS_PATH}${todoId}`, {
@@ -53,12 +73,14 @@ export const TodoDetails = () => {
                 })
                     .then(response => {
                         if (response.status === 200) {
-                            navigate("/")
+                            notifApi.success(successNotif)
+                        } else {
+                            notifApi.error(errorNotif)
                         }
                     })
-                    .catch(error => console.error(error.message))
+                    .catch(error => notifApi.error(errorNotif))
             })
-            .catch(error => console.error(error.message))
+            .catch(error => notifApi.error(errorNotif))
     }
 
     const doneHandler = (e) => {
@@ -79,42 +101,46 @@ export const TodoDetails = () => {
                                     ...prev,
                                     content: e.target.value,
                                 }))}
-                            /> : "--"
+                            /> : "Not found"
                     }
                 </Col>
                 <Col span={14}></Col>
             </Row>
-            <Row style={{paddingBottom: "20px"}}>
-                <Col span={8}>
-                    <Checkbox
-                        checked={todo?.status === TODO_STATUS_DONE}
-                        onChange={doneHandler}
-                    >
-                        Done
-                    </Checkbox>
-                </Col>
-                <Col span={16}></Col>
-            </Row>
-            <Row>
-                <Col span={8}>
-                    <Flex gap="small" wrap="wrap">
-                        <Button
-                            type="primary"
-                            onClick={saveHandler}
-                        >
-                            Save
-                        </Button>
-                        <Button
-                            danger
-                            type="primary"
-                            onClick={deleteHandler}
-                        >
-                            Delete task
-                        </Button>
-                    </Flex>
-                </Col>
-                <Col span={16}></Col>
-            </Row>
+            {todo ?
+                <>
+                    <Row style={{paddingBottom: "20px"}}>
+                        <Col span={8}>
+                            <Checkbox
+                                checked={todo?.status === TODO_STATUS_DONE}
+                                onChange={doneHandler}
+                            >
+                                Done
+                            </Checkbox>
+                        </Col>
+                        <Col span={16}></Col>
+                    </Row>
+                    <Row>
+                        <Col span={8}>
+                            <Flex gap="small" wrap="wrap">
+                                <Button
+                                    type="primary"
+                                    onClick={saveHandler}
+                                >
+                                    Save
+                                </Button>
+                                <Button
+                                    danger
+                                    type="primary"
+                                    onClick={deleteHandler}
+                                >
+                                    Delete task
+                                </Button>
+                            </Flex>
+                        </Col>
+                        <Col span={16}></Col>
+                    </Row>
+                </> : null
+            }
         </>
     )
 }
