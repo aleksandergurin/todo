@@ -1,14 +1,15 @@
 import {useEffect, useState} from "react"
 import {useNavigate, useParams} from "react-router-dom"
-import {Button, Col, Row, Input, Flex, Checkbox, Typography} from "antd"
+import {Button, Col, Row, Input, Flex, Checkbox, Typography, AutoComplete} from "antd"
 
 import {
     TODOS_PATH,
     CSRF_PATH,
     TODO_STATUS_DONE,
     TODO_STATUS_ACTIVE,
-    QUICK_NOTIF_DURATION_SEC,
+    QUICK_NOTIF_DURATION_SEC, GEO_PATH,
 } from "./Constants"
+import {joinCityStateCountry, uniqueGeoData} from "./utils"
 
 
 export const TodoDetails = ({notifApi}) => {
@@ -16,6 +17,7 @@ export const TodoDetails = ({notifApi}) => {
     const {todoId} = useParams()
 
     const [todo, setTodo] = useState(null)
+    const [locationOptions, setLocationOptions] = useState(null)
 
     useEffect(() => {
         fetch(`${TODOS_PATH}/${todoId}`)
@@ -94,6 +96,43 @@ export const TodoDetails = ({notifApi}) => {
         setTodo(prev => ({...prev, status}))
     }
 
+    const searchLocation = (query) => {
+        if (!query) {
+            setLocationOptions(null)
+            return
+        }
+
+        const errorNotif = {
+            message: "Unable to obtain GEO data",
+            description: "Try again later.",
+        }
+
+        fetch(`${GEO_PATH}/${encodeURI(query)}`)
+            .then(response => {
+                if (response.status === 200) {
+                    response.json().then(data =>
+                        setLocationOptions(uniqueGeoData(data.data))
+                    )
+                } else {
+                    notifApi.error(errorNotif)
+                }
+            })
+            .catch(error => notifApi.error(errorNotif))
+    }
+
+    const changeLocation = (_, {data}) => {
+        setTodo(prev => ({
+            ...prev,
+            city: data?.name,
+            state: data?.state,
+            country: data?.country,
+        }))
+    }
+
+    const clearLocation = () => {
+        setTodo(prev => ({...prev, city: null, state: null, country: null}))
+    }
+
     return (
         <>
             <Row style={{paddingBottom: "20px"}}>
@@ -117,6 +156,18 @@ export const TodoDetails = ({notifApi}) => {
             </Row>
             {todo ?
                 <>
+                    <Row style={{paddingBottom: "20px"}}>
+                        <AutoComplete
+                            allowClear
+                            style={{width: "250px"}}
+                            defaultValue={joinCityStateCountry(todo?.city, todo?.state, todo?.country)}
+                            options={locationOptions}
+                            onSelect={changeLocation}
+                            onSearch={searchLocation}
+                            onClear={clearLocation}
+                            placeholder="City"
+                        />
+                    </Row>
                     <Row style={{paddingBottom: "20px"}}>
                         <Col span={8}>
                             <Checkbox

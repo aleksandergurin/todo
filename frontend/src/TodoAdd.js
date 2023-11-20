@@ -8,6 +8,7 @@ import {
     QUICK_NOTIF_DURATION_SEC,
     GEO_PATH,
 } from "./Constants"
+import {uniqueGeoData} from "./utils"
 
 const {TextArea} = Input
 
@@ -68,20 +69,9 @@ export const TodoAdd = ({notifApi}) => {
         fetch(`${GEO_PATH}/${encodeURI(query)}`)
             .then(response => {
                 if (response.status === 200) {
-                    response.json().then(data => {
-                        const seenValues = new Set()
-                        const newLocationOptions = []
-                        data.data.forEach((locationObj, idx) => {
-                            const {name, state, country} = locationObj
-                            const label = [name, state, country].filter(Boolean).join(', ')
-                            if (seenValues.has(label)) {
-                                return
-                            }
-                            seenValues.add(label)
-                            newLocationOptions.push({value: label, data: locationObj})
-                        })
-                        setLocationOptions(newLocationOptions)
-                    })
+                    response.json().then(data =>
+                        setLocationOptions(uniqueGeoData(data.data))
+                    )
                 } else {
                     notifApi.error(errorNotif)
                 }
