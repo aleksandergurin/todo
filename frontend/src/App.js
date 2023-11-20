@@ -79,9 +79,13 @@ const App = ({history}) => {
                 <Content style={contentStyle}>
                     <Routes>
                         <Route path="/login" element={<Login notifApi={notifApi} />} />
-                        <Route path="/" element={<TodosTable notifApi={notifApi} />} />
-                        <Route path="/add" element={<TodoAdd notifApi={notifApi} />} />
-                        <Route path="/todo/:todoId" element={<TodoDetails notifApi={notifApi} />} />
+                        {username ?
+                            <>
+                                <Route path="/" element={<TodosTable notifApi={notifApi} />} />
+                                <Route path="/add" element={<TodoAdd notifApi={notifApi} />} />
+                                <Route path="/todo/:todoId" element={<TodoDetails notifApi={notifApi} />} />
+                            </> : null
+                        }
                         <Route path="*" element={<NoPage />} />
                     </Routes>
                 </Content>
