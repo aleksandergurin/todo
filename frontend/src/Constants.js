@@ -4,6 +4,7 @@ export const LOGIN_PATH = "/api/auth/login"
 export const LOGOUT_PATH = "/api/auth/logout"
 export const WHOAMI_PATH = "/api/auth/whoami"
 export const GEO_PATH = "/api/weather/geo"
+export const WEATHER_PATH = "/api/weather/current"
 // If you change page size, you have to do the same on backend.
 export const PAGE_SIZE = 10
 // Corresponds to enum in database (see backend).

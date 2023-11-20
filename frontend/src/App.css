@@ -2,3 +2,20 @@
     margin: 20px;
 }
 
+.cold-bg {
+    background-color: lightblue;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.normal-bg {
+    background-color: #FFAA33;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.hot-bg {
+    background-color: #ffa3a3;
+    padding: 4px;
+    border-radius: 4px;
+}

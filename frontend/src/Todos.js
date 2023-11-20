@@ -7,11 +7,12 @@ import {
     CSRF_PATH,
     PAGE_SIZE,
     TODO_STATUS_DONE,
-    TODO_STATUS_ACTIVE, QUICK_NOTIF_DURATION_SEC,
+    TODO_STATUS_ACTIVE, QUICK_NOTIF_DURATION_SEC, WEATHER_PATH,
 } from "./Constants"
+import {joinCityStateCountry} from "./utils"
 
 
-const columns = [
+const columns = (weatherData) => ([
     {
         title: "Content",
         dataIndex: "content",
@@ -36,23 +37,71 @@ const columns = [
                 <s>{location}</s> : location
         },
     },
-]
+    {
+        title: "Weather",
+        render: (text, {city, state, country}) => {
+            const loc = joinCityStateCountry(city, state, country)
+
+            const weather = weatherData[loc]?.data
+            if (!weather) {
+                return ''
+            }
+            const conditions = weather.weather[0]?.main
+            if (weather.main.temp < 10 || ["Rain", "Snow"].includes(conditions)) {
+                return <span className="cold-bg">{weather.main.temp} C</span>
+            } else if (
+                (weather.main.temp >= 10 && weather.main.temp < 25)
+                || conditions === "Clouds"
+            ) {
+                return <span className="normal-bg">{weather.main.temp} C</span>
+            } else {
+                return <span className="hot-bg">{weather.main.temp} C</span>
+            }
+        },
+    }
+])
 
 
 export const TodosTable = ({notifApi}) => {
     const navigate = useNavigate()
     const [todos, setTodos] = useState(null)
     const [current, setCurrent] = useState(1)
+    const [weatherData, setWeatherData] = useState({})
 
     useEffect(() => {
         fetch(`${TODOS_PATH}?page=${current}`)
             .then(response => response.json())
-            .then(data => setTodos(data))
+            .then(data => {
+                setTodos(data)
+                fetchWeatherData(data?.results.map(({city, state, country}) =>
+                    joinCityStateCountry(city, state, country)))
+            })
             .catch(error => notifApi.error({
                 message: "Unable to receive tasks",
                 description: "Try again later.",
             }))
     }, [current])
+
+    const fetchWeatherData = (locations) => {
+        locations.forEach(loc => {
+            if (!loc) {
+                return
+            }
+
+            fetch(`${WEATHER_PATH}/${encodeURI(loc)}`)
+                .then(resp => {
+                    if (resp.status === 200) {
+                        resp.json().then(data =>
+                            setWeatherData(prev => ({
+                                ...prev,
+                                [loc]: data,
+                            }))
+                        )
+                    }
+                })
+                .catch(error => console.error(error.message))
+        })
+    }
 
     const handleTableChange = (pagination, filters, sorter) =>
         setCurrent(pagination.current)
@@ -111,7 +160,7 @@ export const TodosTable = ({notifApi}) => {
                 todos ?
                     <>
                         <Table
-                            columns={columns}
+                            columns={columns(weatherData)}
                             dataSource={todos.results}
                             pagination={{
                                 current,
