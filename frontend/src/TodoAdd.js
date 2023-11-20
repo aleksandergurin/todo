@@ -2,15 +2,28 @@ import {useState} from "react"
 import {useNavigate} from "react-router-dom"
 import {Button, Col, Input, Row, Typography} from "antd"
 
-import {TODOS_PATH, CSRF_PATH} from "./Constants"
+import {
+    TODOS_PATH,
+    CSRF_PATH,
+    QUICK_NOTIF_DURATION_SEC,
+} from "./Constants"
 
 const {TextArea} = Input
 
-export const TodoAdd = () => {
+export const TodoAdd = ({notifApi}) => {
     const navigate = useNavigate()
     const [content, setContent] = useState("")
 
     const handleSubmitTodo = () => {
+        const errorNotif = {
+            message: "Unable to add task",
+            description: "Try again later.",
+        }
+        const successNotif = {
+            message: "Task added",
+            duration: QUICK_NOTIF_DURATION_SEC, // sec
+            onClose: () => navigate("/"),
+        }
         fetch(CSRF_PATH)
             .then(response => {
                 fetch(TODOS_PATH, {
@@ -23,11 +36,14 @@ export const TodoAdd = () => {
                 })
                     .then(response => {
                         if (response.status === 201) {
-                            navigate("/")
+                            notifApi.success(successNotif)
+                        } else {
+                            notifApi.error(errorNotif)
                         }
                     })
-                    .catch(error => console.error(error.message))
+                    .catch(error => notifApi.error(errorNotif))
             })
+            .catch(error => notifApi.error(errorNotif))
     }
 
     return (

@@ -9,3 +9,5 @@ export const PAGE_SIZE = 10
 // Corresponds to enum in database (see backend).
 export const TODO_STATUS_DONE = "done"
 export const TODO_STATUS_ACTIVE = "active"
+
+export const QUICK_NOTIF_DURATION_SEC = 1 // seconds
