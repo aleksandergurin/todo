@@ -6,4 +6,7 @@ from .models import Todo
 class TodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Todo
-        fields = ('id', 'content', 'created', 'updated', 'status')
+        fields = (
+            "id", "content", "created", "updated",
+            "status", "city", "state", "country",
+        )

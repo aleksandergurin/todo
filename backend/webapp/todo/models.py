@@ -13,6 +13,9 @@ class Todo(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=32, choices=TodoStatus.choices, default=TodoStatus.active)
+    city = models.CharField(max_length=128, default=None, null=True)
+    state = models.CharField(max_length=128, default=None, null=True)
+    country = models.CharField(max_length=128, default=None, null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
