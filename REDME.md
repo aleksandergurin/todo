@@ -15,7 +15,7 @@ docker compose exec backend bash
 ```
 
 You can access application by pointing your browser to http://localhost:8080.
-Use login: `admin`, password: `admin` to login and test the application.
+Use login: `admin`, password: `admin` to log in and to test the application.
 
 Remove docker volumes (to clear database):
 ```bash
