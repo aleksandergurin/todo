@@ -21,7 +21,7 @@ export const TodoAdd = ({notifApi}) => {
         }
         const successNotif = {
             message: "Task added",
-            duration: QUICK_NOTIF_DURATION_SEC, // sec
+            duration: QUICK_NOTIF_DURATION_SEC,
             onClose: () => navigate("/"),
         }
         fetch(CSRF_PATH)
