@@ -2,7 +2,13 @@ import {useEffect, useState} from "react"
 import {useNavigate, useParams} from "react-router-dom"
 import {Button, Col, Row, Input, Flex, Checkbox} from "antd"
 
-import {TODOS_PATH, CSRF_PATH, TODO_STATUS_DONE, TODO_STATUS_ACTIVE} from "./Constants"
+import {
+    TODOS_PATH,
+    CSRF_PATH,
+    TODO_STATUS_DONE,
+    TODO_STATUS_ACTIVE,
+    QUICK_NOTIF_DURATION_SEC,
+} from "./Constants"
 
 
 export const TodoDetails = ({notifApi}) => {
@@ -27,7 +33,7 @@ export const TodoDetails = ({notifApi}) => {
         }
         const successNotif = {
             message: "Task deleted",
-            duration: 1, // sec
+            duration: QUICK_NOTIF_DURATION_SEC,
             onClose: () => navigate("/"),
         }
         fetch(CSRF_PATH)
@@ -58,7 +64,7 @@ export const TodoDetails = ({notifApi}) => {
         }
         const successNotif = {
             message: "Task saved",
-            duration: 1, // sec
+            duration: QUICK_NOTIF_DURATION_SEC,
             onClose: () => navigate("/"),
         }
         fetch(CSRF_PATH)
